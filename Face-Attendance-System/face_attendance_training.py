@@ -11,34 +11,55 @@ face_rec_model = dlib.face_recognition_model_v1("dlib_face_recognition_resnet_mo
 encodings_dir = 'trained_encodings_dlib'
 os.makedirs(encodings_dir, exist_ok=True)
 
-def process_images_from_folder_or_file(path, name):
-    encodings = []
+def process_images_from_folder(path):
     resolved_path = os.path.abspath(path)
-    print(f"Resolved path: {resolved_path}")
+    print(f"Processing dataset folder: {resolved_path}")
 
-    if os.path.isfile(resolved_path):
+    if not os.path.isdir(resolved_path):
+        print(f"Invalid folder path: {resolved_path}")
+        return
 
-        image = cv2.imread(resolved_path)
-        if image is None:
-            print(f"Could not read image: {resolved_path}")
-            return
-        process_single_image(image, resolved_path, encodings)
-    elif os.path.isdir(resolved_path):
-        
-        images = [os.path.join(resolved_path, img) for img in os.listdir(resolved_path) if img.lower().endswith(('jpg', 'jpeg', 'png'))]
+    person_folders = [f for f in os.listdir(resolved_path) if os.path.isdir(os.path.join(resolved_path, f))]
+
+    if not person_folders:
+        print(f"No subfolders found in dataset folder: {resolved_path}")
+        return
+
+    for person_name in person_folders:
+        person_path = os.path.join(resolved_path, person_name)
+        print(f"Processing person: {person_name}")
+        encodings = []
+
+        images = [os.path.join(person_path, img) for img in os.listdir(person_path) if img.lower().endswith(('jpg', 'jpeg', 'png'))]
         if not images:
-            print(f"No valid images found in folder: {resolved_path}")
-            return
+            print(f"No valid images found for {person_name}")
+            continue
 
-        print(f"Processing {len(images)} images from folder: {resolved_path}")
         for image_path in images:
             image = cv2.imread(image_path)
             if image is None:
                 print(f"Could not read image: {image_path}")
                 continue
             process_single_image(image, image_path, encodings)
+
+        if encodings:
+            avg_encoding = np.mean(encodings, axis=0)
+            save_encoding(avg_encoding, person_name)
+
+def process_images_from_file(path, name):
+    encodings = []
+    resolved_path = os.path.abspath(path)
+    print(f"Resolved path: {resolved_path}")
+
+    if os.path.isfile(resolved_path):
+        # Process a single file
+        image = cv2.imread(resolved_path)
+        if image is None:
+            print(f"Could not read image: {resolved_path}")
+            return
+        process_single_image(image, resolved_path, encodings)
     else:
-        print(f"Invalid path: {resolved_path}")
+        print(f"Invalid file path: {resolved_path}")
         return
 
     if encodings:
@@ -104,20 +125,25 @@ def save_encoding(encoding, name):
 
 def main():
     while True:
-        name = input("Enter the name of the person to train (or type 'exit' to quit): ")
-        if name.lower() == 'exit':
+        choice = input("Choose training method: (1) Webcam (2) File (3) Dataset Folder (or type 'exit' to quit): ")
+
+        if choice.lower() == 'exit':
             print("Exiting training.")
             break
 
-        choice = input("Choose input method: (1) Webcam (2) File : ")
-
         if choice == '1':
+            name = input("Enter the name of the person to train: ")
             capture_images_from_webcam(name)
         elif choice == '2':
-            path = input("Enter the file or folder path: ")
-            process_images_from_folder_or_file(path, name)
+            name = input("Enter the name of the person to train: ")
+            path = input("Enter the file path: ")
+            process_images_from_file(path, name)
+        elif choice == '3':
+            path = input("Enter the dataset folder path: ")
+            process_images_from_folder(path)
         else:
-            print("Invalid choice. Please select 1 or 2.")
+            print("Invalid choice. Please select 1, 2, or 3.")
 
 if __name__ == "__main__":
     main()
+
