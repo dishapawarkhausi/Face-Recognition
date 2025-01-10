@@ -13,9 +13,8 @@ This project is a **Face Attendance System** that automates attendance tracking 
 - **Liveness Detection**:
   - Detects blinks, head movements, and gaze patterns to ensure the person is live.
 
-- **Training Module**:
-  - Captures facial data using a webcam or image files.
-  - Generates unique face encodings for each individual.
+- **Training Options**:
+  - Train using **webcam**, a **single image file**, or a **dataset folder** containing subfolders for multiple individuals.
 
 - **Data Storage**:
   - Stores facial encodings as `.pkl` files.
@@ -26,10 +25,14 @@ This project is a **Face Attendance System** that automates attendance tracking 
 ## Workflow
 
 ### Training Module (`face_attendance_training.py`):
-1. Input a person’s name.
-2. Capture face data using a webcam or image files.
-3. Detect faces and extract facial landmarks using `dlib`.
-4. Compute and save a 128-dimensional facial encoding in a `.pkl` file.
+1. Choose a training method:
+   - **Webcam**: Capture live face data.
+   - **File**: Use a single image file.
+   - **Dataset Folder**: Use a folder containing subfolders for each person.
+2. For each detected face:
+   - Extract 68 facial landmarks using `dlib`.
+   - Compute a 128-dimensional facial encoding.
+3. Save the encoding for each person in a `.pkl` file.
 
 ### Attendance Module (`face_attendance_system.py`):
 1. Load saved facial encodings.
@@ -63,15 +66,15 @@ This project is a **Face Attendance System** that automates attendance tracking 
 
 ## Usage
 
-### Training a New Person
+### Training the System
 1. Run the training script:
    ```bash
    python face_attendance_training.py
    ```
-2. Enter the person’s name.
-3. Choose an input method:
-   - Webcam: Capture face data in real-time.
-   - File/Folder: Use an image file or a folder of images.
+2. Choose a training method:
+   - **Webcam**: Input the person’s name and capture live data.
+   - **File**: Input the person’s name and provide the image file path.
+   - **Dataset Folder**: Provide the folder path containing subfolders for each person.
 
 ### Running the Attendance System
 1. Start the attendance script:
@@ -112,7 +115,7 @@ face-attendance-system/
 
 - **Accuracy**: Achieved precise recognition using a pre-trained deep learning model.
 - **Spoof Prevention**: Implemented liveness detection to ensure only live individuals are marked present.
-- **Scalability**: New individuals can be easily added by training their faces.
+- **Scalability**: New individuals can easily be added by training their faces.
 
 ---
 
