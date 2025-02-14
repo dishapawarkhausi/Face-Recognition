@@ -1,12 +1,16 @@
-# 🌟 Beginner-Level Machine Learning Projects  
+# Face Recognition Repository
 
-Welcome to my collection of beginner-friendly Machine Learning (ML) projects! This repository showcases simple yet impactful projects designed to help me (and others) learn and practice ML concepts.  
+This repository contains various practice codes and projects related to Face Recognition using Python and OpenCV.
 
----
+## Contents
+- Basic face detection and recognition scripts
+- OpenCV and dlib-based face processing techniques
+- Small projects demonstrating face recognition applications
 
-## 🎯 Purpose of This Repository  
-- **Learn and Grow**: Practice foundational ML concepts and techniques.  
-- **Share Knowledge**: Provide beginners with clear examples to kickstart their ML journey.  
-- **Collaborate**: Encourage others to contribute and improve these projects.  
+## Installation
 
----
+Clone the repository:
+```bash
+git clone https://github.com/dishapawarkhausi/face-recognition.git
+cd face-recognition
+```
